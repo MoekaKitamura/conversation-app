@@ -1,0 +1,32 @@
+<% if @conversation.messages.size > 10 && params[:show_all] != "true" %>
+  <%= link_to 'すべてのメッセージを表示', show_all: true %>
+<% end %>
+
+  <% @messages.each do |message| %>
+    <div class="message <%= message.user == current_user ? "send" : "receive" %>">
+      <% if message.content.present? %>
+        <div>
+          <%= message.user.name %>
+          <%= message.set_time %>
+        </div>
+        <div>
+          <span class="message__content"><%= message.content %></span>
+        </div>
+        <div class="message__read">
+          <% if message.user == current_user %>
+            <%= message.read ? '既読' : '未読' %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+<%= form_with(model: [@conversation, @message]) do |f| %>
+  <div>
+    <%= f.text_area :content %>
+  </div>
+    <%= f.hidden_field :user_id, value: current_user.id %>
+  <div>
+    <%= f.submit "メッセージを送る" %>
+  </div>
+<% end %>

@@ -4,7 +4,7 @@ class MessagesController < ApplicationController
   def index
     @messages = @conversation.messages.order(:created_at)
     @messages.where.not(user_id: current_user.id).update_all(read: true)
-    if @messages.length > 10
+    if @messages.length > 10 && params[:show_all] != "true"
       @messages = @messages.last(10)
     end
     @message = Message.new
@@ -23,5 +23,9 @@ class MessagesController < ApplicationController
 
   def set_conversation
     @conversation = Conversation.find(params[:conversation_id])
+  end
+
+  def message_params
+    params.require(:message).permit(:content, :user_id)
   end
 end

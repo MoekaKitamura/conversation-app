@@ -5,4 +5,12 @@ class Conversation < ApplicationRecord
   has_many :messages, dependent: :destroy
   
   validates_uniqueness_of :sender_id, scope: :recipient_id
+
+  def target_user(current_user)
+    if sender_id == current_user.id
+      User.find(recipient_id)
+    elsif recipient_id == current_user.id
+      User.find(sender_id)
+    end
+  end
 end
